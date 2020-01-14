@@ -9,17 +9,21 @@ const router = require("./router");
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+const {addUser, removeUser, getUser} = require("./users.js") 
 
 
-io.on("connection", (socket) => {
-    console.log("a user connected")
-    socket.on('signin', () => {
-        console.log(name)
-    })
-    socket.on("disconnect", () => {
-        console.log("user disconnected")
-    })
-})
+io.on("connection", socket => {
+  console.log("a user connected");
+
+  socket.on('signin', ({name}, cb) => {
+    
+  });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
 app.use(router);
 
-server.listen(PORT, () => {console.log(`server listening on port ${PORT}`)})
+server.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`);
+});
