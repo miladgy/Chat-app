@@ -1,10 +1,9 @@
 import React from 'react'
-import "../NavBar/NavBar.css"
+import "./NavBar.css"
 import online from "../../icons/online.png"
 import exit from "../../icons/exit.png"
 
-const NavBar = () => {
-    return (
+const NavBar = () => (
         <div className="navBar">
             <div className="navBarLeftCorner">
                 <img className="onlineIcon" src={online} alt="online icon"/>
@@ -15,6 +14,6 @@ const NavBar = () => {
             
         </div>
     )
-}
+
 
 export default NavBar;

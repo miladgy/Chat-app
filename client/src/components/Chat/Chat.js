@@ -3,6 +3,7 @@ import queryString from "query-string";
 import io from "socket.io-client";
 import "./Chat.css";
 import NavBar from "../NavBar/NavBar";
+import Input from "../Input/Input";
 
 const ENDPOINT = "localhost:5000";
 let socket = io(ENDPOINT);
@@ -45,11 +46,8 @@ console.log('messagez', messages)
     <div className="chatOuterContainer">
       <div className="chatInnerContainer">
         <NavBar />
-        {/* <input 
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null}
-        /> */}
+        <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
+        
       </div>
     </div>
   );
