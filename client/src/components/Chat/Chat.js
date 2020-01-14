@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import "./Chat.css";
 import NavBar from "../NavBar/NavBar";
 import Input from "../Input/Input";
+import Message from "../Message/Message";
 
 const ENDPOINT = "localhost:5000";
 let socket = io(ENDPOINT);
@@ -17,6 +18,7 @@ const Chat = ({ location }) => {
     socket = io.connect();
 
     setName(name);
+    
     socket.emit("signin", { name }, (error) => {
       console.log(error);
     });
@@ -46,6 +48,7 @@ console.log('messagez', messages)
     <div className="chatOuterContainer">
       <div className="chatInnerContainer">
         <NavBar />
+        <Message message={message} name={name}/>
         <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
         
       </div>
