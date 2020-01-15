@@ -4,10 +4,17 @@ import io from "socket.io-client";
 import "./Chat.css";
 import NavBar from "../NavBar/NavBar";
 import Input from "../Input/Input";
-import Message from "../Message/Message";
+import Messages from "../Messages/Messages";
 
 const ENDPOINT = "localhost:5000";
-let socket = io(ENDPOINT);
+let socket = io(ENDPOINT)
+// let socket = io(ENDPOINT, {
+//   forceNew: true,
+//   reconnection: true,
+//   reconnectionDelay: 3000,
+//   reconnectionDelayMax: 5000,
+//   reconnectionAttempts: 0
+// });
 
 const Chat = ({ location }) => {
   const [name, setName] = useState("");
@@ -18,39 +25,43 @@ const Chat = ({ location }) => {
     socket = io.connect();
 
     setName(name);
-    
-    socket.emit("signin", { name }, (error) => {
+
+    socket.emit("signin", { name }, error => {
       console.log(error);
     });
-    return () => {
-      socket.emit('disconnect');
-      socket.off();
-    }
-    
+   
+    // return () => {
+    //   socket.emit('disconnect');
+    //   socket.off();
+    // }
   }, [ENDPOINT, location.search]);
 
-useEffect(() => {
-  socket.on('message', (message) => {
-    console.log('do i come in here')
-    setMessages([...messages, message]);
-  })
-}, [messages])
+  useEffect(() => {
+    socket.on("message", message => {
+      console.log("do i come in here");
+      setMessages([...messages, message]);
+    });
+  
+  }, [messages]);
 
-const sendMessage = (e) => {
-  e.preventDefault();
-  if (message){
-    socket.emit('sendMessage', message, () => setMessage(''))
-  }
-}
-console.log('message', message)
-console.log('messagez', messages)
+  const sendMessage = e => {
+    e.preventDefault();
+    if (message) {
+      socket.emit("sendMessage", message, () => setMessage(""));
+    }
+  };
+  console.log("message", message);
+  console.log("messagez", messages);
   return (
     <div className="chatOuterContainer">
       <div className="chatInnerContainer">
         <NavBar />
-        <Message message={message} name={name}/>
-        <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
-        
+        <Messages messages={messages} name={name} />
+        <Input
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
       </div>
     </div>
   );

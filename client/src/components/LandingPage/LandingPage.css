@@ -23,6 +23,7 @@ html, body {
   
   .innerContainer {
     width: 20%;
+    position: relative;
   }
   
   .LandingPageJoin {
@@ -42,20 +43,39 @@ html, body {
       color: #fff !important;
       text-transform: uppercase;
       text-decoration: none;
-      background: #2979FF;
       padding: 20px;
       border-radius: 5px;
       display: inline-block;
       border: none;
-      width: 100%;
+      width: 180px;
+      height: 60px;
       cursor: pointer;
       margin-top: 60px;
-      margin-left: 20px;
+      background: transparent;
+      border: 1px solid #91C9FF;
+      outline: none;
+      transition: 0.4s ease-in-out;
   }
   
-  /* .mt-20 {
-    margin-top: 20px;
+  svg {
+    position: absolute;
+    border-radius: 5px;
+    left: 0;
+    bottom: 0;
+    fill: none;
+    stroke: rgba(221, 146, 146, 0.993);
+    stroke-dasharray: 150 480;
+    stroke-dashoffset: 150;
+    transition: 1s ease-in-out;
+  }
+  
+  /* .btn:hover {
+    transition: 0.4s ease-in-out;
+    background: #4F95DA;
   } */
+  .btn:hover svg {
+    stroke-dashoffset: -480;
+  }
   
   @media (min-width: 320px) and (max-width: 480px) {
     .joinOuterContainer {
