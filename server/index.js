@@ -10,7 +10,10 @@ const router = require("./router");
 const app = express();
 const server = http.createServer(app);
 
-// gracefull shutdown
+/*
+  Gracefull shutdown
+*/
+
 setInterval(() => server.getConnections(
   (err, connections) => console.log(`${connections} connections currently open`)
 ), 1000);
@@ -39,7 +42,10 @@ function shutDown() {
   connections.forEach(curr => curr.end());
   setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 }
-// socket connection
+/*
+  socket connection
+*/
+
 const io = socketio(server, {'pingInterval': 2000, 'pingTimeout': 5000});
 
 io.on("connection", socket => {
@@ -52,13 +58,12 @@ io.on("connection", socket => {
     }
     socket.emit("message", {
       user: "admin",
-      text: `Welcome to the chat room ${user.name}.`
+      text: `Welcome to the chat room ${user.name} :).`
     });
     socket.broadcast.emit("message", {
       user: "admin",
       text: `${user.name} has joined our chat.`
     });
-    
     cb();
   });
   socket.on('sendMessage', (message, cb) => {
@@ -68,6 +73,13 @@ io.on("connection", socket => {
   })
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    const user = removeUser(socket.id);
+    if (user){
+      io.emit('message', {
+        user: "admin",
+        text: `${user.name} has left the chat`
+      });
+    }
   });
 });
 app.use(router);

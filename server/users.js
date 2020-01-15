@@ -11,7 +11,7 @@ const addUser = ({ id, name }) => {
   return { user };
 };
 
-const removeUser = () => {
+const removeUser = (id) => {
     const userIndex = users.findIndex(p => p.id === id)
     if (userIndex > -1){
        return users.splice(userIndex, 1)[0];
