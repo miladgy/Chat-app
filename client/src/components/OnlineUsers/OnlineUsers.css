@@ -1,0 +1,50 @@
+.textContainer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+
+border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    color: white;
+    height: 40%;
+    justify-content: space-around;
+    flex: start
+
+  }
+  
+  .activeContainer {
+    display: flex;
+   
+    align-items: center;
+    margin-bottom: 50%;
+  }
+  
+  .activeClient {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .onlineIcon {
+   
+        margin-top: 8px;
+        width: 5px;
+        height: 5px;
+      
+  }
+  .onlineClient {
+    margin: 0px;
+    padding-right: 50px;
+  }
+  
+  .textContainer {
+    margin-bottom: 0px;
+  }
+  
+  /* @media (min-width: 320px) and (max-width: 1200px) {
+    .textContainer {
+      display: none;
+    }
+  } */

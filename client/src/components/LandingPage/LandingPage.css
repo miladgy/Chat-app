@@ -40,11 +40,12 @@ html, body {
   }
   
   .signInBtn {
+    position: relative;
       color: #fff !important;
       text-transform: uppercase;
       text-decoration: none;
       padding: 20px;
-      border-radius: 5px;
+      border-radius: 4px;
       display: inline-block;
       border: none;
       width: 180px;
@@ -58,15 +59,16 @@ html, body {
   }
   
   svg {
+    
     position: absolute;
-    border-radius: 5px;
+    border-radius: 6px;
     left: 0;
     bottom: 0;
     fill: none;
     stroke: rgba(221, 146, 146, 0.993);
     stroke-dasharray: 150 480;
     stroke-dashoffset: 150;
-    transition: 1s ease-in-out;
+    transition: 0.8s ease-in-out;
   }
   
   /* .btn:hover {
