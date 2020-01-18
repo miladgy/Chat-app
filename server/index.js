@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 setInterval(() => server.getConnections(
   (err, connections) => console.log(`${connections} connections currently open`)
-), 1000);
+), 3000);
 
 ['SIGINT', 'SIGTERM'].forEach(signal => process.on(signal, shutDown))
 
@@ -54,8 +54,13 @@ io.on("connection", socket => {
   socket.on("signin", ({ name }, cb) => {
     const { error, user } = addUser({ id: socket.id, name });
     if (error) {
-      return cb(error);
-    }
+      socket.emit("message", {
+        user: "admin",
+        text: `Username ${user.name} is already taken :/. Try a new one!`
+    })
+    cb();
+  }
+  
     socket.emit("message", {
       user: "admin",
       text: `Welcome to the chat room ${user.name} :).`
@@ -71,6 +76,14 @@ io.on("connection", socket => {
     io.emit('message', {user: user.name, text: message})
     cb();
   })
+  const logoffTimer;
+    socket.on('inactivity', () => {
+        clearTimeout(logoffTimer);
+        logoffTimer = setTimeout(() => {
+            socket.destroy();
+            socket.emit("logoff", { text: "Logged off due to inactivity" });
+        }, 600 * 15);
+    });
   socket.on("disconnect", () => {
     console.log("user disconnected");
     const user = removeUser(socket.id);

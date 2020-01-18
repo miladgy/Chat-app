@@ -17,7 +17,7 @@ let socket = io(ENDPOINT)
 // });
 
 const Chat = ({ location }) => {
-  const [name, setName] = useState("");
+  const [name, setName] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   useEffect(() => {
@@ -25,15 +25,14 @@ const Chat = ({ location }) => {
     socket = io.connect();
 
     setName(name);
-
     socket.emit("signin", { name }, error => {
       console.log(error);
     });
    
-    // return () => {
-    //   socket.emit('disconnect');
-    //   socket.off();
-    // }
+    return () => {
+      socket.emit('disconnect');
+      socket.off();
+    }
   }, [ENDPOINT, location.search]);
 
   useEffect(() => {
