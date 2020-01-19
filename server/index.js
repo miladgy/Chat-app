@@ -9,6 +9,8 @@ const router = require("./router");
 
 const app = express();
 const server = http.createServer(app);
+let timer = {};
+let timeoutSeconds = 10;
 
 /*
   Gracefull shutdown
@@ -82,20 +84,23 @@ io.on("connection", socket => {
     socket.broadcast.emit("message", {});
   });
 
+  
   socket.on("sendMessage", (message, cb) => {
-    let timeoutSeconds = 10;
     const user = getUser(socket.id);
     const handleActivity = user => {
       const inactiveMessage = {
         user: "admin",
-        text: `${user.name} logged off due to inactivity`
+        text: `${user.name} logged off due to inactivity!`
       };
-      socket.emit("message", inactiveMessage);
+      io.emit("message", inactiveMessage);
       socket.disconnect(true);
     };
-    clearTimeout(setTimeout(handleActivity, 1000 * timeoutSeconds, user));
     io.emit("message", { user: user.name, text: message });
-    setTimeout(handleActivity, 1000 * timeoutSeconds, user);
+    if ( timer ) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(handleActivity, 1000 * timeoutSeconds, user);
+
     cb();
     // let logoffTimer = 5; // sanieh
     //   // clear the timer on activity
