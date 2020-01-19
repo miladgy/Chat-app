@@ -1,98 +1,100 @@
 html, body {
-    font-family: 'Roboto', sans-serif;
-    padding: 0;
-    margin: 0;
-  }
-  
-  #root {
-    height: 100vh;
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  .outerContainer {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    height: 100vh;
-    align-items: center;
-    background-color: #1A1A1D;
-  }
-  
-  .innerContainer {
-    width: 20%;
-    position: absolute;
-  }
-  
-  .LandingPageJoin {
-    margin-top: 30px;
-    border-radius: 0;
-    padding: 15px 20px;
-    width: 100%;
-    z-index: 4;
-  }
-  
-  .heading {
-    color: white;
-    font-size: 2.5em;
-    padding-bottom: 10px;
-    border-bottom: 2px solid white;
-  }
-  
-  .signInBtn {
-    position: relative;
-      color: #fff !important;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 20px;
-      border-radius: 4px;
-      display: inline-block;
-      border: none;
-      width: 180px;
-      height: 60px;
-      cursor: pointer;
-      margin-top: 60px;
-      background: transparent;
-      border: 1px solid #91C9FF;
-      outline: none;
-      transition: 0.4s ease-in-out;
-  }
-  
-  svg {
-    
-    position: absolute;
-    border-radius: 6px;
-    left: 0;
-    bottom: 0;
-    fill: none;
-    stroke: rgba(221, 146, 146, 0.993);
-    stroke-dasharray: 150 480;
-    stroke-dashoffset: 150;
-    transition: 0.8s ease-in-out;
-  }
-  
-  .error {
+  font-family: 'Roboto', sans-serif;
+  padding: 0;
+  margin: 0;
+  background-image: url(../../icons/image1.jpg);
+  background-size: cover;
+}
+
+#root {
+  height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.outerContainer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  height: 100vh;
+  align-items: center;
+}
+
+.innerContainer {
+  width: 20%;
+  position: absolute;
+}
+
+.LandingPageJoin {
+  margin-top: 30px;
+  border-radius: 0;
+  padding: 15px 20px;
+  width: 100%;
+  z-index: 4;
+}
+
+.heading {
+  color: white;
+  font-size: 2.5em;
+  padding-bottom: 10px;
+  border-bottom: 2px solid white;
+  font-family: fantasy;
+}
+
+.signInBtn {
+  position: relative;
+    color: #fff !important;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 4px;
+    display: inline-block;
+    border: none;
+    width: 180px;
+    height: 60px;
+    cursor: pointer;
+    margin-top: 60px;
+    background: transparent;
+    border: 1px solid rgb(3, 3, 3);
+    outline: none;
     transition: 0.4s ease-in-out;
-    color: rgb(218, 87, 87);
-  } 
-  .btn:hover svg {
-    stroke-dashoffset: -480;
+}
+
+svg {
+  
+  position: absolute;
+  border-radius: 6px;
+  left: 0;
+  bottom: 0;
+  fill: none;
+  stroke: rgba(129, 210, 221, 0.993);
+  stroke-dasharray: 150 480;
+  stroke-dashoffset: 150;
+  transition: 0.8s ease-in-out;
+}
+
+.error {
+  transition: 0.4s ease-in-out;
+  color: rgb(218, 87, 87);
+} 
+.btn:hover svg {
+  stroke-dashoffset: -480;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .joinOuterContainer {
+    height: 100%;
   }
-  
-  @media (min-width: 320px) and (max-width: 480px) {
-    .joinOuterContainer {
-      height: 100%;
-    }
-  
-    .joinInnerContainer {
-      width: 90%;
-    }
-  
-  
+
+  .joinInnerContainer {
+    width: 90%;
   }
-  
-  button:focus {
-    outline: 0;
-  }
+
+
+}
+
+button:focus {
+  outline: 0;
+}
