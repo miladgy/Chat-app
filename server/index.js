@@ -2,7 +2,7 @@ const { addUser, removeUser, getUser } = require("./users.js");
 const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
-
+const logger = require("../server/services/logger")
 const PORT = process.env.NODE_ENV === "production" ? 80 : 5000;
 
 const router = require("./router");
@@ -61,27 +61,34 @@ const io = socketio(server, { pingInterval: 2000, pingTimeout: 5000 });
 
 io.on("connection", socket => {
   console.log("a user connected");
-
+  logger.info(`${socket.id} is connected`);
   socket.on("signin", ({ name }, cb) => {
     const { error, user } = addUser({ id: socket.id, name });
     if (error) {
-      console.log("username taken in index.js");
-      socket.emit("message", {
-        user: "admin",
-        text: `Username ${user.name} is already taken :/. Try a new one!`
-      });
-      cb();
-    }
+      logger.info(
+        `${socket.id} is already taken!`
+      );
 
+      
+      return cb(error);
+    } else {
+      /* istanbul ignore next */
+    //  logger.info(
+    //   `username - ${user.name} joined chat`
+    // );
     socket.emit("message", {
       user: "admin",
       text: `Welcome to the chat room ${user.name} :).`
     });
+   
     socket.broadcast.emit("message", {
       user: "admin",
       text: `${user.name} has joined our chat.`
     });
+     
     socket.broadcast.emit("message", {});
+    }
+
   });
 
   
@@ -92,6 +99,9 @@ io.on("connection", socket => {
         user: "admin",
         text: `${user.name} logged off due to inactivity!`
       };
+      logger.info(
+        `${user.name} logged off due to inactivity`
+      );
       io.emit("message", inactiveMessage);
       socket.disconnect(true);
     };
@@ -102,35 +112,20 @@ io.on("connection", socket => {
     timer = setTimeout(handleActivity, 1000 * timeoutSeconds, user);
 
     cb();
-    // let logoffTimer = 5; // sanieh
-    //   // clear the timer on activity
-    //   // should also update activity timestamp in session
-    //   clearTimeout(logoffTimer);
-    //   // set a timer that will log off the user after 15 minutes
-    //   logoffTimer = setTimeout(() => {
-    //       socket.disconnect(true);
-    //       // you can also check session activity here
-    //       // and perhaps emit a logoff event to the client as mentioned
-    //       socket.emit("message", {
-    //         user: "admin",
-    //       text: `${user.name} logged off due to inactivity.`
-    //      });
-    //   }, 200 * 10);
+
   });
-
-  // socket.on('inactivity', () => {
-  //   clearTimeout(logoffTimer);
-  //   logoffTimer = setTimeout(() => {
-  //     socket.destroy();
-  //     socket.emit("logoff", { text: "Logged off due to inactivity" });
-  //   }, 600 * 15);
-  // });
-
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    logger.info(
+      `${socket.id} disconnected from chat.`
+    );
     const user = removeUser(socket.id);
     if (user) {
       io.emit("message", {
+        user: "admin",
+        text: `${user.name} has left the chat`
+      });
+      io.emit("disconnect", {
         user: "admin",
         text: `${user.name} has left the chat`
       });

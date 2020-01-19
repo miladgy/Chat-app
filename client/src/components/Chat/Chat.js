@@ -5,6 +5,9 @@ import "./Chat.css";
 import NavBar from "../NavBar/NavBar";
 import Input from "../Input/Input";
 import Messages from "../Messages/Messages";
+import { useHistory } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
+
 
 const ENDPOINT = "localhost:5000";
 let socket = io(ENDPOINT)
@@ -17,16 +20,19 @@ let socket = io(ENDPOINT)
 // });
 
 const Chat = ({ location }) => {
+  const history = useHistory();
   const [name, setName] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   useEffect(() => {
     const { name } = queryString.parse(location.search);
-    socket = io.connect();
 
     setName(name);
     socket.emit("signin", { name }, error => {
-      console.log(error);
+      if(error) {
+          alert(error)
+          history.push(`/`)
+      }
     });
    
     return () => {
@@ -37,11 +43,25 @@ const Chat = ({ location }) => {
 
   useEffect(() => {
     socket.on("message", message => {
-      console.log("do i come in here");
       setMessages([...messages, message]);
     });
   
   }, [messages]);
+
+  useEffect(() => {
+
+    socket.on("disconnect", () => {
+      
+         setTimeout(() => {
+          history.push(`/`)
+         }, 2000); 
+    });
+   
+    return () => {
+      socket.emit('disconnect');
+      socket.off();
+    }
+  }, [history]);
 
   const sendMessage = e => {
     e.preventDefault();
@@ -66,4 +86,4 @@ const Chat = ({ location }) => {
   );
 };
 
-export default Chat;
+export default withRouter(Chat);

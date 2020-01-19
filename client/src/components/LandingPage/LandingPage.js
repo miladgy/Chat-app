@@ -1,4 +1,4 @@
-import React, {Link} from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import useLoginInLanding from "../../useLoginInLanding";
 import validate from '../../LoginValidation';
@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 
 const LandingPage = () => {
   const history = useHistory();
-  function login() {
+  const login = () => {
     history.push(`/chat?name=${values.name}`)
   };
   const {
