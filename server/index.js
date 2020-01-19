@@ -3,7 +3,7 @@ const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
 
-const PORT = process.env.NODE_ENV === 'production' ? 80 : 5000;
+const PORT = process.env.NODE_ENV === "production" ? 80 : 5000;
 
 const router = require("./router");
 
@@ -14,29 +14,38 @@ const server = http.createServer(app);
   Gracefull shutdown
 */
 
-setInterval(() => server.getConnections(
-  (err, connections) => console.log(`${connections} connections currently open`)
-), 3000);
+setInterval(
+  () =>
+    server.getConnections((err, connections) =>
+      console.log(`${connections} connections currently open`)
+    ),
+  3000
+);
 
-['SIGINT', 'SIGTERM'].forEach(signal => process.on(signal, shutDown))
+["SIGINT", "SIGTERM"].forEach(signal => process.on(signal, shutDown));
 
 let connections = [];
 
-server.on('connection', connection => {
+server.on("connection", connection => {
   connections.push(connection);
-  connection.on('close', () => connections = connections.filter(curr => curr !== connection));
+  connection.on(
+    "close",
+    () => (connections = connections.filter(curr => curr !== connection))
+  );
 });
 
 function shutDown() {
-  console.log('Received kill signal, shutting down gracefully');
+  console.log("Received kill signal, shutting down gracefully");
   server.close(() => {
-      console.log('Closed out remaining connections');
-      process.exit(0);
+    console.log("Closed out remaining connections");
+    process.exit(0);
   });
 
   setTimeout(() => {
-      console.error('Could not close connections in time, forcefully shutting down');
-      process.exit(1);
+    console.error(
+      "Could not close connections in time, forcefully shutting down"
+    );
+    process.exit(1);
   }, 10000);
 
   connections.forEach(curr => curr.end());
@@ -46,7 +55,7 @@ function shutDown() {
   socket connection
 */
 
-const io = socketio(server, {'pingInterval': 2000, 'pingTimeout': 5000});
+const io = socketio(server, { pingInterval: 2000, pingTimeout: 5000 });
 
 io.on("connection", socket => {
   console.log("a user connected");
@@ -54,13 +63,14 @@ io.on("connection", socket => {
   socket.on("signin", ({ name }, cb) => {
     const { error, user } = addUser({ id: socket.id, name });
     if (error) {
+      console.log("username taken in index.js");
       socket.emit("message", {
         user: "admin",
         text: `Username ${user.name} is already taken :/. Try a new one!`
-    })
-    cb();
-  }
-  
+      });
+      cb();
+    }
+
     socket.emit("message", {
       user: "admin",
       text: `Welcome to the chat room ${user.name} :).`
@@ -69,26 +79,53 @@ io.on("connection", socket => {
       user: "admin",
       text: `${user.name} has joined our chat.`
     });
-    cb();
+    socket.broadcast.emit("message", {});
   });
-  socket.on('sendMessage', (message, cb) => {
-    const user = getUser(socket.id)
-    io.emit('message', {user: user.name, text: message})
+
+  socket.on("sendMessage", (message, cb) => {
+    let timeoutSeconds = 10;
+    const user = getUser(socket.id);
+    const handleActivity = user => {
+      const inactiveMessage = {
+        user: "admin",
+        text: `${user.name} logged off due to inactivity`
+      };
+      socket.emit("message", inactiveMessage);
+      socket.disconnect(true);
+    };
+    clearTimeout(setTimeout(handleActivity, 1000 * timeoutSeconds, user));
+    io.emit("message", { user: user.name, text: message });
+    setTimeout(handleActivity, 1000 * timeoutSeconds, user);
     cb();
-  })
-  const logoffTimer;
-    socket.on('inactivity', () => {
-        clearTimeout(logoffTimer);
-        logoffTimer = setTimeout(() => {
-            socket.destroy();
-            socket.emit("logoff", { text: "Logged off due to inactivity" });
-        }, 600 * 15);
-    });
+    // let logoffTimer = 5; // sanieh
+    //   // clear the timer on activity
+    //   // should also update activity timestamp in session
+    //   clearTimeout(logoffTimer);
+    //   // set a timer that will log off the user after 15 minutes
+    //   logoffTimer = setTimeout(() => {
+    //       socket.disconnect(true);
+    //       // you can also check session activity here
+    //       // and perhaps emit a logoff event to the client as mentioned
+    //       socket.emit("message", {
+    //         user: "admin",
+    //       text: `${user.name} logged off due to inactivity.`
+    //      });
+    //   }, 200 * 10);
+  });
+
+  // socket.on('inactivity', () => {
+  //   clearTimeout(logoffTimer);
+  //   logoffTimer = setTimeout(() => {
+  //     socket.destroy();
+  //     socket.emit("logoff", { text: "Logged off due to inactivity" });
+  //   }, 600 * 15);
+  // });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
     const user = removeUser(socket.id);
-    if (user){
-      io.emit('message', {
+    if (user) {
+      io.emit("message", {
         user: "admin",
         text: `${user.name} has left the chat`
       });
