@@ -1,4 +1,3 @@
-const logger = require("../server/services/logger")
 const users = [];
 
 const addUser = ({ id, name }) => {

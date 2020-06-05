@@ -5,16 +5,18 @@
   height: 100vh;
   background-image: url(../../icons/image1.jpg);
   background-size: 1600px;
+  /* filter: blur(8px);
+  -webkit-filter: blur(8px); */
 }
 
 .chatInnerContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   border-radius: 8px;
   height: 60%;
   width: 35%;
+  backdrop-filter: blur(8px);
   margin-right: 380px;
 }
 

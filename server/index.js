@@ -9,9 +9,9 @@ const router = require("./router");
 
 const app = express();
 const server = http.createServer(app);
+app.use(router);
 let timer = {};
 let timeoutSeconds = 10;
-
 /*
   Gracefull shutdown
 */
@@ -50,8 +50,8 @@ function shutDown() {
     process.exit(1);
   }, 10000);
 
-  connections.forEach(curr => curr.end());
-  setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
+  // connections.forEach(curr => curr.end());
+  // setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 }
 /*
   socket connection
@@ -62,14 +62,13 @@ const io = socketio(server, { pingInterval: 2000, pingTimeout: 5000 });
 io.on("connection", socket => {
   console.log("a user connected");
   logger.info(`${socket.id} is connected`);
+
   socket.on("signin", ({ name }, cb) => {
     const { error, user } = addUser({ id: socket.id, name });
     if (error) {
       logger.info(
         `${socket.id} is already taken!`
       );
-
-      
       return cb(error);
     } else {
       /* istanbul ignore next */
@@ -86,7 +85,6 @@ io.on("connection", socket => {
       text: `${user.name} has joined our chat.`
     });
      
-    socket.broadcast.emit("message", {});
     }
 
   });
@@ -94,6 +92,7 @@ io.on("connection", socket => {
   
   socket.on("sendMessage", (message, cb) => {
     const user = getUser(socket.id);
+    io.emit("message", { user: user.name, text: message });
     const handleActivity = user => {
       const inactiveMessage = {
         user: "admin",
@@ -103,13 +102,12 @@ io.on("connection", socket => {
         `${user.name} logged off due to inactivity`
       );
       io.emit("message", inactiveMessage);
-      socket.disconnect(true);
+      socket.disconnect(user.id);
     };
-    io.emit("message", { user: user.name, text: message });
     if ( timer ) {
       clearTimeout(timer);
     }
-    timer = setTimeout(handleActivity, 1000 * timeoutSeconds, user);
+    timer = setTimeout(handleActivity, 2000 * timeoutSeconds, user);
 
     cb();
 
@@ -132,7 +130,7 @@ io.on("connection", socket => {
     }
   });
 });
-app.use(router);
+
 
 server.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);

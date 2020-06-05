@@ -2,8 +2,7 @@ html, body {
   font-family: 'Roboto', sans-serif;
   padding: 0;
   margin: 0;
-  background-image: url(../../icons/image1.jpg);
-  background-size: cover;
+  
 }
 
 #root {
@@ -15,16 +14,21 @@ html, body {
 }
 
 .outerContainer {
+  background-image: url(../../icons/image1.jpg);
+  background-size: cover;
   display: flex;
   justify-content: center;
   text-align: center;
   height: 100vh;
   align-items: center;
+  z-index: 1;
 }
 
 .innerContainer {
+  z-index: 999;
   width: 20%;
   position: absolute;
+  
 }
 
 .LandingPageJoin {
@@ -46,6 +50,7 @@ html, body {
 .signInBtn {
   position: relative;
     color: #fff !important;
+    backdrop-filter: blur(8px);
     text-transform: uppercase;
     text-decoration: none;
     padding: 20px;
@@ -76,8 +81,9 @@ svg {
 }
 
 .error {
-  transition: 0.4s ease-in-out;
+  transition: all 0.35s ease-in-out; 
   color: rgb(218, 87, 87);
+  backdrop-filter: blur(8px);
 } 
 .btn:hover svg {
   stroke-dashoffset: -480;

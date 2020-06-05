@@ -9,8 +9,6 @@ import { useHistory } from "react-router-dom";
 import { withRouter } from 'react-router-dom';
 
 
-const ENDPOINT = "localhost:5000";
-let socket = io(ENDPOINT)
 // let socket = io(ENDPOINT, {
 //   forceNew: true,
 //   reconnection: true,
@@ -18,6 +16,8 @@ let socket = io(ENDPOINT)
 //   reconnectionDelayMax: 5000,
 //   reconnectionAttempts: 0
 // });
+const ENDPOINT = "localhost:5000";
+let socket = io(ENDPOINT)
 
 const Chat = ({ location }) => {
   const history = useHistory();
@@ -28,10 +28,11 @@ const Chat = ({ location }) => {
     const { name } = queryString.parse(location.search);
 
     setName(name);
-    socket.emit("signin", { name }, error => {
+    socket.emit("signin", { name }, (error) => {
       if(error) {
-          alert(error)
-          history.push(`/`)
+        alert(error)
+        history.push(`/`)
+
       }
     });
    
@@ -43,25 +44,28 @@ const Chat = ({ location }) => {
 
   useEffect(() => {
     socket.on("message", message => {
+      console.log(message)
       setMessages([...messages, message]);
     });
   
   }, [messages]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    socket.on("disconnect", () => {
-      
-         setTimeout(() => {
-          history.push(`/`)
-         }, 2000); 
-    });
+  //   socket.on("disconnect", () => {
+     
+  //     if (1){
+  //       setTimeout(() => {
+  //        history.goBack()
+  //       }, 2000); 
+  //     }
+  //   });
    
-    return () => {
-      socket.emit('disconnect');
-      socket.off();
-    }
-  }, [history]);
+  //   return () => {
+  //     socket.emit('disconnect');
+  //     socket.off();
+  //   }
+  // }, [history]);
 
   const sendMessage = e => {
     e.preventDefault();

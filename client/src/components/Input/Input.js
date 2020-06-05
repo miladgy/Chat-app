@@ -22,16 +22,16 @@ import "./Input.css";
 
 const Input = ({message, setMessage, sendMessage}) => {
   
-  const onInput = (e) => {
-    console.log(e.target.value)
-    let duration = 2000;
-    let inputTimer = setTimeout(()=>{
-      if (e.target.value === message) {
-        console.log('you stopped typing')
-      };
-    }, duration);
-    clearTimeout(inputTimer);
-  }
+  // const onInput = (e) => {
+  //   console.log(e.target.value)
+  //   let duration = 2000;
+  //   let inputTimer = setTimeout(()=>{
+  //     if (e.target.value === message) {
+  //       console.log('you stopped typing')
+  //     };
+  //   }, duration);
+  //   clearTimeout(inputTimer);
+  // }
   
     return (
 
